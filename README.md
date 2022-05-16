@@ -59,15 +59,14 @@ Create a mutable list for storing child item positions and offsets
 Place your item @Composables in either GlassmorphicRow or GlassmorphicColumn and update Place object from above list. Pass capturade background image into the Glassmorphic @Composable
 
 ```
- GlassmorphicRow(
+   GlassmorphicRow(
                 modifier = Modifier.padding(top = 150.dp),
-                scrollState,
-                items,
-                childMeasures,
-                capturedImage,
-                dividerSpace = 10
-            )
-            {
+                scrollState = scrollState,
+                childMeasures = childMeasures,
+                targetBitmap = capturedImage,
+                dividerSpace = 10,
+                blurRadius = 50
+            ){
                 items.forEachIndexed { index, it ->
                     Box(
                         modifier = Modifier
