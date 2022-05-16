@@ -11,20 +11,21 @@ GlassmorphicRow @Composable
 
 Setup Gradle:
 
-```allprojects {
+```
+allprojects {
     repositories {
-    ...
     maven { url 'https://jitpack.io' }
     }
-}```
-
+}
+```
 ```implementation 'com.github.jakhongirMadaminov:glassmorphic-composables:0.0.1'```
 
 Usage: 
 
 Place your background Image @Composable in Capturable @Composable 
 
-  ```val captureController = rememberCaptureController()
+  ```
+  val captureController = rememberCaptureController()
         Capturable(
             controller = captureController,
             onCaptured = { bitmap, error ->
@@ -47,8 +48,8 @@ Place your background Image @Composable in Capturable @Composable
             withContext(Main) {
                 captureController.capture()
             }
-        })```
-        
+        })
+```
         
 Create a mutable list for storing child item positions and offsets 
         
@@ -57,8 +58,8 @@ Create a mutable list for storing child item positions and offsets
  
 Place your item @Composables in either GlassmorphicRow or GlassmorphicColumn and update Place object from above list. Pass capturade background image into the Glassmorphic @Composable
 
-
-            ```GlassmorphicRow(
+```
+ GlassmorphicRow(
                 modifier = Modifier.padding(top = 150.dp),
                 scrollState,
                 items,
@@ -82,7 +83,8 @@ Place your item @Composables in either GlassmorphicRow or GlassmorphicColumn and
                         )
                     }
                 }
-            }```
+            }
+```
 
 
  
