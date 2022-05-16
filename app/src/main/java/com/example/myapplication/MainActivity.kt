@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -28,8 +27,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,7 +35,6 @@ import dev.shreyaspatil.capturable.Capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
-import uz.uzkassa.apay.glassmorphic_composables.GlassmorphicColumn
 import uz.uzkassa.apay.glassmorphic_composables.GlassmorphicRow
 import uz.uzkassa.apay.glassmorphic_composables.Place
 
@@ -52,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    Sample()
                 }
             }
         }
@@ -60,17 +56,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    var screenWidthPx: Int
-    var screenWidthDp: Int
-    var cardWidthDp: Int
-    val context = LocalContext.current
-    with(LocalDensity.current) {
-        screenWidthDp = LocalConfiguration.current.screenWidthDp
-        screenWidthPx = screenWidthDp.dp.toPx().toInt()
-        cardWidthDp = screenWidthDp / 2
-    }
-
+fun Sample() {
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    val cardWidthDp = screenWidthDp / 2
     var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     val scrollState = rememberScrollState()
@@ -80,7 +68,6 @@ fun Greeting(name: String) {
     }
 
     Box {
-
         val captureController = rememberCaptureController()
         Capturable(
             controller = captureController,
@@ -156,6 +143,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     MyApplicationTheme {
-        Greeting("Android")
+        Sample()
     }
 }
