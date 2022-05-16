@@ -30,13 +30,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.jakhongirmadaminov.glassmorphic_composables.GlassmorphicRow
-import dev.jakhongirmadaminov.glassmorphic_composables.Place
 import dev.jakhongirmadaminov.glassmorphic_sample.ui.theme.MyApplicationTheme
 import dev.shreyaspatil.capturable.Capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
+import uz.uzkassa.apay.glassmorphic_composables.GlassmorphicRow
+import uz.uzkassa.apay.glassmorphic_composables.Place
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
