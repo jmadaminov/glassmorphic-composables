@@ -37,7 +37,43 @@ Place your background Image @Composable in Capturable @Composable
             withContext(Main) {
                 captureController.capture()
             }
-        })
+        })```
+        
+        
+Create a mutable list for storing child item positions and offsets 
+        
+ ```val childMeasures = remember { mutableStateListOf<Place>() }```
  
+ 
+Place your item @Composables in either GlassmorphicRow or GlassmorphicColumn and update Place object from above list. Pass capturade background image into the Glassmorphic @Composable
+
+
+            ```GlassmorphicRow(
+                modifier = Modifier.padding(top = 150.dp),
+                scrollState,
+                items,
+                childMeasures,
+                capturedImage,
+                dividerSpace = 10
+            )
+            {
+                items.forEachIndexed { index, it ->
+                    Box(
+                        modifier = Modifier
+                            .onGloballyPositioned {
+                                childMeasures[index] = Place(it.size, it.positionInParent())
+                            }
+                            .width(cardWidthDp.dp)
+                            .padding(15.dp)
+                    ) {
+                        Text(
+                            "Item $it",
+                            color = Color.White
+                        )
+                    }
+                }
+            }```
+
+
  
         

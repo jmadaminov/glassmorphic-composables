@@ -77,10 +77,6 @@ fun Sample() {
                     capturedBitmap = bitmap.asAndroidBitmap()
                     // Bitmap is captured successfully. Do something with it!
                 }
-
-                if (error != null) {
-                    // Error occurred. Handle it!
-                }
             }
         ) {
             Image(
@@ -98,19 +94,17 @@ fun Sample() {
         })
 
 
-        val childMeasures = remember {
-            mutableStateListOf<Place>()
-        }
+        val childMeasures = remember { mutableStateListOf<Place>() }
         childMeasures.addAll(items.map { Place() })
 
-        capturedBitmap?.let {
+        capturedBitmap?.let { capturedImage ->
 
             GlassmorphicRow(
-                modifier = Modifier.padding(horizontal = 15.dp),
+                modifier = Modifier.padding(top = 150.dp),
                 scrollState,
                 items,
                 childMeasures,
-                it,
+                capturedImage,
                 dividerSpace = 10
             )
             {
@@ -121,7 +115,6 @@ fun Sample() {
                                 childMeasures[index] = Place(it.size, it.positionInParent())
                             }
                             .width(cardWidthDp.dp)
-                            //                                .background(Color(0xFFFF0000))
                             .padding(15.dp)
                     ) {
                         Text(
