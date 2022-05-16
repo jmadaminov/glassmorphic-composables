@@ -49,7 +49,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
 
-                groupId = 'com.github.jakhongirMadaminov'
+                groupId = 'com.github.jakhongirmadaminov'
                 artifactId = 'glassmorphic-composables'
                 version = '0.0.1'
             }
