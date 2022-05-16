@@ -1,4 +1,9 @@
 buildscript {
+    repositories{
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
     ext {
         compose_version = '1.2.0-beta01'
     }

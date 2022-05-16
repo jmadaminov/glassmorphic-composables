@@ -18,7 +18,7 @@ allprojects {
     }
 }
 ```
-```implementation 'com.github.jakhongirMadaminov:glassmorphic-composables:0.0.1'```
+```implementation 'com.github.jakhongirMadaminov:glassmorphic-composables:0.0.1-beta'```
 
 Usage: 
 
