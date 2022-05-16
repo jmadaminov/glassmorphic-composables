@@ -1,4 +1,4 @@
-package dev.jakhongirmadaminov.glassmorphic_composables
+package dev.jakhongirmadaminov.glassmorphiccomposables
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Canvas
