@@ -41,6 +41,7 @@ dependencies {
     api "dev.shreyaspatil:capturable:1.0.1"
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
+    testImplementation 'junit:junit:4.13.2'
 }
 
 afterEvaluate {
