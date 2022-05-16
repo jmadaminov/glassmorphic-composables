@@ -9,6 +9,16 @@ GlassmorphicRow @Composable
 
 ![image](https://user-images.githubusercontent.com/12813066/168596377-82baee30-a41e-4375-aa8c-aba678995b41.png)
 
+Setup Gradle:
+
+```allprojects {
+    repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+    }
+}```
+
+```implementation 'com.github.jakhongirMadaminov:glassmorphic-composables:0.0.1'```
 
 Usage: 
 
