@@ -45,10 +45,12 @@ fun GlassmorphicRow(
     scrollState: ScrollState,
     items: ArrayList<Int>,
     childMeasures: SnapshotStateList<Place>,
-    bgBlurred: Bitmap,
+    targetBitmap: Bitmap,
     dividerSpace: Int = 10,
+    blurRadius: Int = 100,
     content: @Composable (RowScope.() -> Unit),
 ) {
+    val blurredBg = remember { fastblur(targetBitmap, 1f, blurRadius)?.asImageBitmap() }
 
     var containerMeasures by remember { mutableStateOf<Place?>(null) }
 
@@ -59,51 +61,55 @@ fun GlassmorphicRow(
             parentDp + childDp
         } ?: run { 0.dp }
     } ?: run { 0.dp }
-    Canvas(
-        modifier = Modifier
-            .horizontalScroll(scrollState)
-            .width(containerMeasures?.size?.width?.dp ?: 0.dp)
-            .height(t)
-    ) {
-        for (i in items.indices) {
-            val path = Path()
 
-            path.addRoundRect(
-                RoundRect(
-                    Rect(
-                        offset = Offset(
-                            (containerMeasures?.offset?.x ?: 0f) + childMeasures[i].offset.x,
-                            (containerMeasures?.offset?.y ?: 0f) + childMeasures[i].offset.y
+    blurredBg?.let { bg ->
+
+        Canvas(
+            modifier = Modifier
+                .horizontalScroll(scrollState)
+                .width(containerMeasures?.size?.width?.dp ?: 0.dp)
+                .height(t)
+        ) {
+            for (i in items.indices) {
+                val path = Path()
+
+                path.addRoundRect(
+                    RoundRect(
+                        Rect(
+                            offset = Offset(
+                                (containerMeasures?.offset?.x ?: 0f) + childMeasures[i].offset.x,
+                                (containerMeasures?.offset?.y ?: 0f) + childMeasures[i].offset.y
+                            ),
+                            size = childMeasures[i].size.toSize(),
                         ),
-                        size = childMeasures[i].size.toSize(),
-                    ),
-                    CornerRadius(10.dp.toPx())
+                        CornerRadius(10.dp.toPx())
+                    )
                 )
-            )
 
-            clipPath(path, clipOp = ClipOp.Intersect) {
-                drawImage(
-                    bgBlurred.asImageBitmap(),
-                    Offset(scrollState.value.toFloat(), 0f)
-                )
+                clipPath(path, clipOp = ClipOp.Intersect) {
+                    drawImage(
+                        bg,
+                        Offset(scrollState.value.toFloat(), 0f)
+                    )
+                }
+//                drawPath(
+//                    path = path,
+//                    color = strokeColor,
+//                    style = Stroke(1f),
+//                    blendMode = BlendMode.Luminosity
+////                blendMode = BlendMode.Luminosity
+//                )
+//                drawPath(
+//                    path = path,
+//                    brush = Brush.verticalGradient(listOf(strokeColor, transparent)),
+//                    blendMode = BlendMode.Overlay
+////                blendMode = BlendMode.Plus
+////                blendMode = BlendMode.Screen
+////                blendMode = BlendMode.Luminosity
+//                )
+
+
             }
-            drawPath(
-                path = path,
-                color = strokeColor,
-                style = Stroke(1f),
-                blendMode = BlendMode.Luminosity
-//                blendMode = BlendMode.Luminosity
-            )
-            drawPath(
-                path = path,
-                brush = Brush.verticalGradient(listOf(strokeColor, transparent)),
-                blendMode = BlendMode.Overlay
-//                blendMode = BlendMode.Plus
-//                blendMode = BlendMode.Screen
-//                blendMode = BlendMode.Luminosity
-            )
-
-
         }
 
     }
@@ -129,10 +135,13 @@ fun GlassmorphicColumn(
     scrollState: ScrollState,
     items: ArrayList<Int>,
     childMeasures: SnapshotStateList<Place>,
-    bgBlurred: Bitmap,
+    targetBitmap: Bitmap,
     dividerSpace: Int = 10,
+    blurRadius: Int = 100,
     content: @Composable (ColumnScope.() -> Unit),
 ) {
+
+    val blurredBg = remember { fastblur(targetBitmap, 1f, blurRadius)?.asImageBitmap() }
 
     var containerMeasures by remember { mutableStateOf<Place?>(null) }
 
@@ -143,51 +152,54 @@ fun GlassmorphicColumn(
             parentDp + childDp
         } ?: run { 0.dp }
     } ?: run { 0.dp }
-    Canvas(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .width(t)
-            .height(containerMeasures?.size?.height?.dp ?: 0.dp)
-    ) {
-        for (i in items.indices) {
-            val path = Path()
 
-            path.addRoundRect(
-                RoundRect(
-                    Rect(
-                        offset = Offset(
-                            (containerMeasures?.offset?.x ?: 0f) + childMeasures[i].offset.x,
-                            (containerMeasures?.offset?.y ?: 0f) + childMeasures[i].offset.y
+
+    blurredBg?.let { bg ->
+
+        Canvas(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .width(t)
+                .height(containerMeasures?.size?.height?.dp ?: 0.dp)
+        ) {
+            for (i in items.indices) {
+                val path = Path()
+
+                path.addRoundRect(
+                    RoundRect(
+                        Rect(
+                            offset = Offset(
+                                (containerMeasures?.offset?.x ?: 0f) + childMeasures[i].offset.x,
+                                (containerMeasures?.offset?.y ?: 0f) + childMeasures[i].offset.y
+                            ),
+                            size = childMeasures[i].size.toSize(),
                         ),
-                        size = childMeasures[i].size.toSize(),
-                    ),
-                    CornerRadius(10.dp.toPx())
+                        CornerRadius(10.dp.toPx())
+                    )
                 )
-            )
 
-            clipPath(path, clipOp = ClipOp.Intersect) {
-                drawImage(
-                    bgBlurred.asImageBitmap(),
-                    Offset(0f,scrollState.value.toFloat())
-                )
+                clipPath(path, clipOp = ClipOp.Intersect) {
+                    drawImage(
+                        bg,
+                        Offset(0f, scrollState.value.toFloat())
+                    )
+                }
+//            drawPath(
+//                path = path,
+//                color = strokeColor,
+//                style = Stroke(1f),
+//            )
+//            drawPath(
+//                path = path,
+//                brush = Brush.verticalGradient(listOf(strokeColor, transparent)),
+//                blendMode = BlendMode.Overlay
+////                blendMode = BlendMode.Plus
+////                blendMode = BlendMode.Screen
+////                blendMode = BlendMode.Luminosity
+//            )
+
+
             }
-            drawPath(
-                path = path,
-                color = strokeColor,
-                style = Stroke(1f),
-                blendMode = BlendMode.Luminosity
-//                blendMode = BlendMode.Luminosity
-            )
-            drawPath(
-                path = path,
-                brush = Brush.verticalGradient(listOf(strokeColor, transparent)),
-                blendMode = BlendMode.Overlay
-//                blendMode = BlendMode.Plus
-//                blendMode = BlendMode.Screen
-//                blendMode = BlendMode.Luminosity
-            )
-
-
         }
 
     }

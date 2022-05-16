@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -42,7 +41,6 @@ import kotlinx.coroutines.withContext
 import uz.uzkassa.apay.glassmorphic_composables.GlassmorphicColumn
 import uz.uzkassa.apay.glassmorphic_composables.GlassmorphicRow
 import uz.uzkassa.apay.glassmorphic_composables.Place
-import uz.uzkassa.apay.glassmorphic_composables.fastblur
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +87,7 @@ fun Greeting(name: String) {
             onCaptured = { bitmap, error ->
                 // This is captured bitmap of a content inside Capturable Composable.
                 if (bitmap != null) {
-                    capturedBitmap = fastblur(bitmap.asAndroidBitmap(), 1f, 100)
+                    capturedBitmap = bitmap.asAndroidBitmap()
                     // Bitmap is captured successfully. Do something with it!
                 }
 
@@ -101,8 +99,8 @@ fun Greeting(name: String) {
             Image(
                 painter = painterResource(id = R.drawable.bg_autumn),
                 contentDescription = "",
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.FillWidth
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
         }
 
@@ -119,13 +117,16 @@ fun Greeting(name: String) {
         childMeasures.addAll(items.map { Place() })
 
         capturedBitmap?.let {
-            GlassmorphicColumn(
+
+            GlassmorphicRow(
                 modifier = Modifier.padding(horizontal = 15.dp),
-                scrollState, items, childMeasures, it,
+                scrollState,
+                items,
+                childMeasures,
+                it,
                 dividerSpace = 10
             )
             {
-                Spacer(modifier = Modifier.width(10.dp))
                 items.forEachIndexed { index, it ->
                     Box(
                         modifier = Modifier
@@ -142,7 +143,6 @@ fun Greeting(name: String) {
                         )
                     }
                 }
-                Spacer(modifier = Modifier.width(10.dp))
             }
 
         }
