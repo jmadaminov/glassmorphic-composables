@@ -55,11 +55,13 @@ Place your background _Image_ composable in _Capturable_ composable
         
 Create a mutable list with the exact item count and populate with default value for storing child item positions and offsets
         
- ``` val childMeasures = remember {
+``` 
+ val childMeasures = remember {
         mutableStateListOf<Place>().apply {
             addAll(YOUR_LIST.map { Place() })
         }
-    }```
+}
+```
  
  
 Place your item Composables in either _GlassmorphicRow_ or _GlassmorphicColumn_ and update Place object from above list. Pass captured background image into the _Glassmorphic_ Composable
