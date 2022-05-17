@@ -25,7 +25,8 @@ Usage:
 Place your background Image @Composable in Capturable @Composable 
 
   ```
-  val captureController = rememberCaptureController()
+    var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val captureController = rememberCaptureController()
         Capturable(
             controller = captureController,
             onCaptured = { bitmap, error ->
@@ -44,6 +45,7 @@ Place your background Image @Composable in Capturable @Composable
             )
         }
 
+// If your background image is loaded through URL you can call this after the image is loaded.
         LaunchedEffect(key1 = true, block = {
             withContext(Main) {
                 captureController.capture()
@@ -51,19 +53,25 @@ Place your background Image @Composable in Capturable @Composable
         })
 ```
         
-Create a mutable list for storing child item positions and offsets 
+Create a mutable list with the exact item count and populate with default value for storing child item positions and offsets
         
- ```val childMeasures = remember { mutableStateListOf<Place>() }```
+ ``` val childMeasures = remember {
+        mutableStateListOf<Place>().apply {
+            addAll(YOUR_LIST.map { Place() })
+        }
+    }```
  
  
-Place your item @Composables in either GlassmorphicRow or GlassmorphicColumn and update Place object from above list. Pass capturade background image into the Glassmorphic @Composable
+Place your item Composables in either _GlassmorphicRow_ or _GlassmorphicColumn_ and update Place object from above list. Pass captured background image into the _Glassmorphic_ Composable
+
+Note: _Capturable_ and _Glassmorphic_ composables must share the same parent Composable like a _Box_.
 
 ```
    GlassmorphicRow(
                 modifier = Modifier.padding(top = 150.dp),
                 scrollState = scrollState,
                 childMeasures = childMeasures,
-                targetBitmap = capturedImage,
+                targetBitmap = capturedBitmap,
                 dividerSpace = 10,
                 blurRadius = 50
             ){
