@@ -22,7 +22,7 @@ allprojects {
 
 Usage: 
 
-Place your background Image @Composable in Capturable @Composable 
+Place your background _Image_ composable in _Capturable_ composable 
 
   ```
     var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
