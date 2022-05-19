@@ -9,6 +9,10 @@ GlassmorphicRow @Composable
 
 ![image](https://user-images.githubusercontent.com/12813066/168596377-82baee30-a41e-4375-aa8c-aba678995b41.png)
 
+With Non-Image background 
+
+![image](https://user-images.githubusercontent.com/12813066/169285195-a1c78e89-848e-4927-b8a0-d69cd595d297.png)
+
 Setup Gradle:
 
 ```
