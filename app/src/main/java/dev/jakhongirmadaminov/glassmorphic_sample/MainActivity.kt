@@ -4,12 +4,14 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.MaterialTheme
@@ -28,15 +30,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jakhongirmadaminov.glassmorphic_sample.ui.theme.MyApplicationTheme
-import dev.jakhongirmadaminov.glassmorphiccomposables.GlassmorphicRow
+import dev.jakhongirmadaminov.glassmorphiccomposables.GlassmorphicColumn
 import dev.jakhongirmadaminov.glassmorphiccomposables.Place
 import dev.shreyaspatil.capturable.Capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
@@ -72,7 +72,7 @@ fun Sample() {
         items.add(i)
     }
 
-    Box {
+    Box(modifier = Modifier.fillMaxSize()) {
         val captureController = rememberCaptureController()
         Capturable(
             controller = captureController,
@@ -84,12 +84,94 @@ fun Sample() {
                 }
             }
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.bg_autumn),
-                contentDescription = "",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+            val bgColor = Color(0xffE1E1E1)
+            val box1 = Color(0xff40B850)
+            val box2 = Color(0xffCA181A)
+            val box3 = Color(0xff035FE5)
+            val box4 = Color(0xffA46ABF)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(bgColor)
             )
+
+            Row() {
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(box4)
+
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(box2)
+
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(box3)
+
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(box1)
+
+                    )
+
+                }
+
+                Column(modifier = Modifier.weight(1f)) {
+
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(box2)
+
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(box1)
+
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(box3)
+
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .background(box4)
+
+                    )
+
+
+                }
+            }
+
+//            Image(
+//                painter = painterResource(id = R.drawable.bg_autumn),
+//                contentDescription = "",
+//                modifier = Modifier.fillMaxSize(),
+//                contentScale = ContentScale.Crop
+//            )
         }
 
         LaunchedEffect(key1 = true, block = {
@@ -102,18 +184,13 @@ fun Sample() {
         childMeasures.addAll(items.map { Place() })
 
         capturedBitmap?.let { capturedImage ->
-            GlassmorphicRow(
-                modifier = Modifier.padding(
-                    top = 150.dp,
-                    bottom = 50.dp,
-                    start = 25.dp,
-                    end = 70.dp
-                ),
+            GlassmorphicColumn(
+                modifier = Modifier.padding(start = 100.dp),
                 scrollState = scrollState,
                 childMeasures = childMeasures,
                 targetBitmap = capturedImage,
                 dividerSpace = 10,
-                blurRadius = 10,
+                blurRadius = 100,
                 drawOnTop = { path ->
                     val strokeColor = Color(0x80ffffff)
                     val transparent = Color.Transparent
