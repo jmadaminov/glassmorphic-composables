@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,9 +31,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jakhongirmadaminov.glassmorphic_sample.ui.theme.MyApplicationTheme
@@ -89,89 +92,89 @@ fun Sample() {
             val box2 = Color(0xffCA181A)
             val box3 = Color(0xff035FE5)
             val box4 = Color(0xffA46ABF)
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(bgColor)
-            )
-
-            Row() {
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(box4)
-
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(box2)
-
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(box3)
-
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(box1)
-
-                    )
-
-                }
-
-                Column(modifier = Modifier.weight(1f)) {
-
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(box2)
-
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(box1)
-
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(box3)
-
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(box4)
-
-                    )
-
-
-                }
-            }
-
-//            Image(
-//                painter = painterResource(id = R.drawable.bg_autumn),
-//                contentDescription = "",
-//                modifier = Modifier.fillMaxSize(),
-//                contentScale = ContentScale.Crop
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .background(bgColor)
 //            )
+//
+//            Row() {
+//
+//                Column(modifier = Modifier.weight(1f)) {
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(200.dp)
+//                            .background(box4)
+//
+//                    )
+//
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(200.dp)
+//                            .background(box2)
+//
+//                    )
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(200.dp)
+//                            .background(box3)
+//
+//                    )
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(200.dp)
+//                            .background(box1)
+//
+//                    )
+//
+//                }
+//
+//                Column(modifier = Modifier.weight(1f)) {
+//
+//
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(200.dp)
+//                            .background(box2)
+//
+//                    )
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(200.dp)
+//                            .background(box1)
+//
+//                    )
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(200.dp)
+//                            .background(box3)
+//
+//                    )
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(200.dp)
+//                            .background(box4)
+//
+//                    )
+//
+//
+//                }
+//            }
+
+            Image(
+                painter = painterResource(id = R.drawable.bg_autumn),
+                contentDescription = "",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
         }
 
         LaunchedEffect(key1 = true, block = {
