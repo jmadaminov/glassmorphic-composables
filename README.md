@@ -18,7 +18,7 @@ allprojects {
     }
 }
 ```
-```implementation 'com.github.jakhongirmadaminov:glassmorphic-composables:0.0.3'```
+```implementation 'com.github.jakhongirmadaminov:glassmorphic-composables:0.0.4'```
 
 Usage: 
 
@@ -70,29 +70,55 @@ Note: _Capturable_ and _Glassmorphic_ composables must share the same parent Com
 
 ```
    GlassmorphicRow(
-                modifier = Modifier.padding(top = 150.dp),
+                modifier = Modifier.padding(
+                    top = 150.dp,
+                    bottom = 50.dp,
+                    start = 25.dp,
+                    end = 70.dp
+                ),
                 scrollState = scrollState,
                 childMeasures = childMeasures,
-                targetBitmap = capturedBitmap,
+                targetBitmap = capturedImage,
                 dividerSpace = 10,
-                blurRadius = 50
-            ){
-                items.forEachIndexed { index, it ->
-                    Box(
-                        modifier = Modifier
-                            .onGloballyPositioned {
-                                childMeasures[index] = Place(it.size, it.positionInParent())
-                            }
-                            .width(cardWidthDp.dp)
-                            .padding(15.dp)
-                    ) {
-                        Text(
-                            "Item $it",
-                            color = Color.White
-                        )
+                blurRadius = 10,
+                drawOnTop = { path ->
+                    val strokeColor = Color(0x80ffffff)
+                    val transparent = Color.Transparent
+                    drawPath(
+                        path = path,
+                        color = strokeColor,
+                        style = Stroke(1f),
+                    )
+                    drawPath(
+                        path = path,
+                        brush = Brush.verticalGradient(listOf(strokeColor, transparent)),
+                        blendMode = BlendMode.Overlay
+//                blendMode = BlendMode.Plus
+//                blendMode = BlendMode.Screen
+//                blendMode = BlendMode.Luminosity
+                    )
+
+                },
+                content = {
+                    items.forEachIndexed { index, it ->
+                        Box(
+                            modifier = Modifier
+                                //                            .background(Color(0x80FF0000))
+                                .onGloballyPositioned {
+                                    childMeasures[index] = Place(it.size, it.positionInParent())
+                                }
+                                .width(cardWidthDp.dp)
+                                .padding(15.dp)
+                        ) {
+                            Text(
+                                "Item $it",
+                                color = Color.White
+                            )
+                        }
                     }
-                }
-            }
+                },
+            )
+
 ```
 
 
