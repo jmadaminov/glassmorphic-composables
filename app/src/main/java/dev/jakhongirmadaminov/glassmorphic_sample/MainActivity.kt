@@ -36,14 +36,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jakhongirmadaminov.glassmorphic_sample.ui.theme.MyApplicationTheme
 import dev.jakhongirmadaminov.glassmorphiccomposables.GlassmorphicColumn
-import dev.jakhongirmadaminov.glassmorphiccomposables.GlassmorphicRow
 import dev.jakhongirmadaminov.glassmorphiccomposables.Place
+import dev.jakhongirmadaminov.glassmorphiccomposables.fastblur
 import dev.shreyaspatil.capturable.Capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 
 const val BLURRED_BG_KEY = "BLURRED_BG_KEY"
+const val BLUR_RADIUS = 100
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,12 +81,15 @@ fun Sample() {
             controller = captureController,
             onCaptured = { bitmap, _ ->
                 // This is captured bitmap of a content inside Capturable Composable.
-                bitmap?.asAndroidBitmap()?.let { it ->
-                    // Bitmap is captured successfully. Do something with it!
-                    App.getInstance().memoryCache.put(BLURRED_BG_KEY, it)
-                    capturedBitmap = it
+                bitmap?.let {
+                    fastblur(it.asAndroidBitmap(), 1f, BLUR_RADIUS)?.let { fastBlurred ->
+                        // Bitmap is captured successfully. Do something with it!
+                        App.getInstance().memoryCache.put(BLURRED_BG_KEY, fastBlurred)
+                        capturedBitmap = fastBlurred
+                    }
                 }
             }
+
         ) {
             val bgColor = Color(0xffE1E1E1)
             val box1 = Color(0xff40B850)
@@ -193,7 +197,7 @@ fun Sample() {
                 childMeasures = childMeasures,
                 targetBitmap = capturedImage.asImageBitmap(),
                 dividerSpace = 10,
-                blurRadius = 100,
+                blurRadius = BLUR_RADIUS,
                 drawOnTop = { path ->
                     val strokeColor = Color(0x80ffffff)
                     val transparent = Color.Transparent
