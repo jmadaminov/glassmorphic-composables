@@ -1,6 +1,5 @@
 package dev.jakhongirmadaminov.glassmorphiccomposables
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -25,7 +24,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipPath
@@ -40,59 +41,66 @@ fun GlassmorphicRow(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
     childMeasures: SnapshotStateList<Place>,
-    targetBitmap: Bitmap,
+    targetBitmap: ImageBitmap,
+    isAlreadyBlurred: Boolean = false,// providing already blurred bitmap consumes less resources
     dividerSpace: Int = 10,
     blurRadius: Int = 100,
     childCornerRadius: Int = 10,
     drawOnTop: DrawScope.(Path) -> Unit = {},
     content: @Composable() (RowScope.() -> Unit),
 ) {
-    val blurredBg = remember { fastblur(targetBitmap, 1f, blurRadius)?.asImageBitmap() }
 
-    var containerMeasures by remember { mutableStateOf<Place?>(null) }
+    if (childMeasures.isEmpty()) return
+    val blurredBg: ImageBitmap = remember {
+        if (isAlreadyBlurred) {
+            targetBitmap
+        } else {
+            fastblur(targetBitmap.asAndroidBitmap(), 1f, blurRadius)?.asImageBitmap() ?: return
+        }
+    }
 
-    val t = containerMeasures?.size?.height?.dp?.let { parentDp ->
-        containerMeasures?.offset?.y?.toInt()?.dp?.let { childDp ->
+
+    var containerMeasures by remember { mutableStateOf(Place()) }
+    val calculatedHeight = containerMeasures.size.height.dp.let { parentDp ->
+        containerMeasures.offset.y.toInt().dp.let { childDp ->
             parentDp + childDp
-        } ?: run { 0.dp }
-    } ?: run { 0.dp }
+        }
+    }
 
-    blurredBg?.let { bg ->
 
-        Canvas(
-            modifier = modifier
-                .horizontalScroll(scrollState)
-                .width(containerMeasures?.size?.width?.dp ?: 0.dp)
-                .height(t)
-        ) {
-            for (i in childMeasures.indices) {
-                val path = Path()
+    Canvas(
+        modifier = modifier
+            .horizontalScroll(scrollState)
+            .width(containerMeasures.size.width.dp)
+            .height(calculatedHeight)
+    ) {
+        for (i in childMeasures.indices) {
+            val path = Path()
 
-                path.addRoundRect(
-                    RoundRect(
-                        Rect(
-                            offset = Offset(
-                                childMeasures[i].offset.x,
-                                childMeasures[i].offset.y
-                            ),
-                            size = childMeasures[i].size.toSize(),
+            path.addRoundRect(
+                RoundRect(
+                    Rect(
+                        offset = Offset(
+                            childMeasures[i].offset.x,
+                            childMeasures[i].offset.y
                         ),
-                        CornerRadius(childCornerRadius.dp.toPx())
+                        size = childMeasures[i].size.toSize(),
+                    ),
+                    CornerRadius(childCornerRadius.dp.toPx())
+                )
+            )
+
+            clipPath(path, clipOp = ClipOp.Intersect) {
+                drawImage(
+                    blurredBg,
+                    Offset(
+                        scrollState.value.toFloat() - containerMeasures.offset.x,
+                        -containerMeasures.offset.y
                     )
                 )
-
-                clipPath(path, clipOp = ClipOp.Intersect) {
-                    drawImage(
-                        bg,
-                        Offset(
-                            scrollState.value.toFloat() - (containerMeasures?.offset?.x ?: 0f),
-                            - (containerMeasures?.offset?.y ?: 0f)
-                        )
-                    )
-                }
-                drawOnTop(path)
-
             }
+            drawOnTop(path)
+
         }
 
     }
@@ -106,7 +114,7 @@ fun GlassmorphicRow(
         modifier = modifier
             .horizontalScroll(scrollState)
             .onGloballyPositioned {
-                if (containerMeasures == null) {
+                if (containerMeasures.size.width == 0 && containerMeasures.size.height == 0) {
                     containerMeasures = Place(it.size, it.positionInParent())
                 }
             },

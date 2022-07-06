@@ -5,13 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +25,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -40,11 +36,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jakhongirmadaminov.glassmorphic_sample.ui.theme.MyApplicationTheme
 import dev.jakhongirmadaminov.glassmorphiccomposables.GlassmorphicColumn
+import dev.jakhongirmadaminov.glassmorphiccomposables.GlassmorphicRow
 import dev.jakhongirmadaminov.glassmorphiccomposables.Place
 import dev.shreyaspatil.capturable.Capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
+
+const val BLURRED_BG_KEY = "BLURRED_BG_KEY"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +66,7 @@ class MainActivity : ComponentActivity() {
 fun Sample() {
     val screenWidthDp = LocalConfiguration.current.screenWidthDp
     val cardWidthDp = screenWidthDp / 2
-    var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var capturedBitmap by remember { mutableStateOf<Bitmap?>(App.getInstance().memoryCache[BLURRED_BG_KEY]) }
 
     val scrollState = rememberScrollState()
     val items = arrayListOf<Int>()
@@ -81,9 +80,10 @@ fun Sample() {
             controller = captureController,
             onCaptured = { bitmap, _ ->
                 // This is captured bitmap of a content inside Capturable Composable.
-                if (bitmap != null) {
-                    capturedBitmap = bitmap.asAndroidBitmap()
+                bitmap?.asAndroidBitmap()?.let { it ->
                     // Bitmap is captured successfully. Do something with it!
+                    App.getInstance().memoryCache.put(BLURRED_BG_KEY, it)
+                    capturedBitmap = it
                 }
             }
         ) {
@@ -179,7 +179,7 @@ fun Sample() {
 
         LaunchedEffect(key1 = true, block = {
             withContext(Main) {
-                captureController.capture()
+                if (capturedBitmap == null) captureController.capture()
             }
         })
 
@@ -191,7 +191,7 @@ fun Sample() {
                 modifier = Modifier.padding(start = 100.dp),
                 scrollState = scrollState,
                 childMeasures = childMeasures,
-                targetBitmap = capturedImage,
+                targetBitmap = capturedImage.asImageBitmap(),
                 dividerSpace = 10,
                 blurRadius = 100,
                 drawOnTop = { path ->
