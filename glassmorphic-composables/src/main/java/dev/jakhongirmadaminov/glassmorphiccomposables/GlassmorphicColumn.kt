@@ -23,7 +23,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidBitmap
@@ -33,13 +33,13 @@ import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun GlassmorphicColumn(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
-    childMeasures: SnapshotStateList<Place>,
+    childMeasures: ImmutableList<Place>,
     targetBitmap: ImageBitmap,
     isAlreadyBlurred: Boolean = false,// providing already blurred bitmap consumes less resources
     dividerSpace: Int = 10,
@@ -59,8 +59,8 @@ fun GlassmorphicColumn(
     }
 
     var containerMeasures by remember { mutableStateOf(Place()) }
-    val calculatedWidth = containerMeasures.size.width.dp.let { parentDp ->
-        containerMeasures.offset.x.toInt().dp.let { childDp ->
+    val calculatedWidth = containerMeasures.sizeX.dp.let { parentDp ->
+        containerMeasures.offsetX.toInt().dp.let { childDp ->
             parentDp + childDp
         }
     }
@@ -69,7 +69,7 @@ fun GlassmorphicColumn(
         modifier = modifier
             .verticalScroll(scrollState)
             .width(calculatedWidth)
-            .height(containerMeasures.size.height.dp)
+            .height(containerMeasures.sizeY.dp)
     ) {
         for (i in childMeasures.indices) {
             val path = Path()
@@ -77,21 +77,24 @@ fun GlassmorphicColumn(
                 RoundRect(
                     Rect(
                         offset = Offset(
-                            childMeasures[i].offset.x,
-                            childMeasures[i].offset.y
+                            childMeasures[i].offsetX,
+                            childMeasures[i].offsetY
                         ),
-                        size = childMeasures[i].size.toSize(),
+                        size = Size(
+                            childMeasures[i].sizeX.toFloat(),
+                            childMeasures[i].sizeY.toFloat()
+                        ),
                     ),
                     CornerRadius(childCornerRadius.dp.toPx())
                 )
             )
 
-            clipPath(path, clipOp = ClipOp.Intersect) {
+            clipPath(path) {
                 drawImage(
                     blurredBg,
                     Offset(
-                        -containerMeasures.offset.x,
-                        scrollState.value.toFloat() - containerMeasures.offset.y
+                        -containerMeasures.offsetX,
+                        scrollState.value.toFloat() - containerMeasures.offsetY
                     )
                 )
             }
@@ -110,8 +113,13 @@ fun GlassmorphicColumn(
         modifier = modifier
             .verticalScroll(scrollState)
             .onGloballyPositioned {
-                if (containerMeasures.size.width == 0 && containerMeasures.size.height == 0) {
-                    containerMeasures = Place(it.size, it.positionInParent())
+                if (containerMeasures.sizeX == 0 && containerMeasures.sizeY == 0) {
+                    containerMeasures = Place(
+                        it.size.width,
+                        it.size.height,
+                        it.positionInParent().x,
+                        it.positionInParent().y
+                    )
                 }
             },
         verticalArrangement = Arrangement.spacedBy(dividerSpace.dp),

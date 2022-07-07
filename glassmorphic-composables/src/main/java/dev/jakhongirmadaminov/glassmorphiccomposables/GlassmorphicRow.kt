@@ -17,13 +17,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidBitmap
@@ -33,14 +32,14 @@ import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
+import kotlinx.collections.immutable.ImmutableList
 
 
 @Composable
 fun GlassmorphicRow(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
-    childMeasures: SnapshotStateList<Place>,
+    childMeasures: ImmutableList<Place>,
     targetBitmap: ImageBitmap,
     isAlreadyBlurred: Boolean = false,// providing already blurred bitmap consumes less resources
     dividerSpace: Int = 10,
@@ -51,7 +50,7 @@ fun GlassmorphicRow(
 ) {
 
     if (childMeasures.isEmpty()) return
-    val blurredBg: ImageBitmap = remember {
+    val blurredBg = remember {
         if (isAlreadyBlurred) {
             targetBitmap
         } else {
@@ -61,8 +60,8 @@ fun GlassmorphicRow(
 
 
     var containerMeasures by remember { mutableStateOf(Place()) }
-    val calculatedHeight = containerMeasures.size.height.dp.let { parentDp ->
-        containerMeasures.offset.y.toInt().dp.let { childDp ->
+    val calculatedHeight = containerMeasures.sizeX.dp.let { parentDp ->
+        containerMeasures.offsetY.toInt().dp.let { childDp ->
             parentDp + childDp
         }
     }
@@ -71,7 +70,7 @@ fun GlassmorphicRow(
     Canvas(
         modifier = modifier
             .horizontalScroll(scrollState)
-            .width(containerMeasures.size.width.dp)
+            .width(containerMeasures.sizeX.dp)
             .height(calculatedHeight)
     ) {
         for (i in childMeasures.indices) {
@@ -80,27 +79,26 @@ fun GlassmorphicRow(
             path.addRoundRect(
                 RoundRect(
                     Rect(
-                        offset = Offset(
-                            childMeasures[i].offset.x,
-                            childMeasures[i].offset.y
+                        offset = Offset(childMeasures[i].offsetX, childMeasures[i].offsetY),
+                        size = Size(
+                            childMeasures[i].sizeX.toFloat(),
+                            childMeasures[i].sizeY.toFloat()
                         ),
-                        size = childMeasures[i].size.toSize(),
                     ),
                     CornerRadius(childCornerRadius.dp.toPx())
                 )
             )
 
-            clipPath(path, clipOp = ClipOp.Intersect) {
+            clipPath(path) {
                 drawImage(
                     blurredBg,
                     Offset(
-                        scrollState.value.toFloat() - containerMeasures.offset.x,
-                        -containerMeasures.offset.y
+                        scrollState.value.toFloat() - containerMeasures.offsetX,
+                        -containerMeasures.offsetY
                     )
                 )
             }
             drawOnTop(path)
-
         }
 
     }
@@ -114,8 +112,13 @@ fun GlassmorphicRow(
         modifier = modifier
             .horizontalScroll(scrollState)
             .onGloballyPositioned {
-                if (containerMeasures.size.width == 0 && containerMeasures.size.height == 0) {
-                    containerMeasures = Place(it.size, it.positionInParent())
+                if (containerMeasures.sizeX == 0 && containerMeasures.sizeY == 0) {
+                    containerMeasures = Place(
+                        it.size.width,
+                        it.size.height,
+                        it.positionInParent().x,
+                        it.positionInParent().y
+                    )
                 }
             },
         horizontalArrangement = Arrangement.spacedBy(dividerSpace.dp),

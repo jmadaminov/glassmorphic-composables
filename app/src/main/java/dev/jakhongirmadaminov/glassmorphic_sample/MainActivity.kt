@@ -16,13 +16,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -36,15 +33,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.jakhongirmadaminov.glassmorphic_sample.ui.theme.MyApplicationTheme
 import dev.jakhongirmadaminov.glassmorphiccomposables.GlassmorphicColumn
+import dev.jakhongirmadaminov.glassmorphiccomposables.GlassmorphicRow
 import dev.jakhongirmadaminov.glassmorphiccomposables.Place
 import dev.jakhongirmadaminov.glassmorphiccomposables.fastblur
 import dev.shreyaspatil.capturable.Capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.withContext
 
 const val BLURRED_BG_KEY = "BLURRED_BG_KEY"
-const val BLUR_RADIUS = 100
+const val BLUR_RADIUS = 50
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -187,12 +186,11 @@ fun Sample() {
             }
         })
 
-        val childMeasures = remember { mutableStateListOf<Place>() }
-        childMeasures.addAll(items.map { Place() })
+        val childMeasures = remember { items.map { Place() }.toImmutableList() }
 
         capturedBitmap?.let { capturedImage ->
             GlassmorphicColumn(
-                modifier = Modifier.padding(start = 100.dp),
+                modifier = Modifier.padding(start = 0.dp),
                 scrollState = scrollState,
                 childMeasures = childMeasures,
                 targetBitmap = capturedImage.asImageBitmap(),
@@ -206,14 +204,14 @@ fun Sample() {
                         color = strokeColor,
                         style = Stroke(1f),
                     )
-                    drawPath(
-                        path = path,
-                        brush = Brush.verticalGradient(listOf(strokeColor, transparent)),
-                        blendMode = BlendMode.Overlay
-//                blendMode = BlendMode.Plus
-//                blendMode = BlendMode.Screen
-//                blendMode = BlendMode.Luminosity
-                    )
+//                    drawPath(
+//                        path = path,
+//                        brush = Brush.verticalGradient(listOf(strokeColor, transparent)),
+//                        blendMode = BlendMode.Overlay
+////                blendMode = BlendMode.Plus
+////                blendMode = BlendMode.Screen
+////                blendMode = BlendMode.Luminosity
+//                    )
 
                 },
                 content = {
@@ -222,7 +220,12 @@ fun Sample() {
                             modifier = Modifier
                                 //                            .background(Color(0x80FF0000))
                                 .onGloballyPositioned {
-                                    childMeasures[index] = Place(it.size, it.positionInParent())
+                                    childMeasures[index].apply {
+                                        sizeX = it.size.width
+                                        sizeY = it.size.height
+                                        offsetX = it.positionInParent().x
+                                        offsetY = it.positionInParent().y
+                                    }
                                 }
                                 .width(cardWidthDp.dp)
                                 .padding(15.dp)

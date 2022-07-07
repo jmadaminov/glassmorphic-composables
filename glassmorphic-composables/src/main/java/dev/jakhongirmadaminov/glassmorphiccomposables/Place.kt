@@ -1,8 +1,6 @@
 package dev.jakhongirmadaminov.glassmorphiccomposables
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.runtime.Stable
 
-@Immutable
-data class Place(var size: IntSize = IntSize(0, 0), var offset: Offset = Offset(0f, 0f))
+@Stable
+data class Place(var sizeX: Int = 0, var sizeY: Int = 0, var offsetX: Float = 0f, var offsetY: Float = 0f)
